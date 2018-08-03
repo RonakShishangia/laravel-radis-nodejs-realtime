@@ -4,13 +4,12 @@ var io = require('socket.io')(http);
 var Redis = require('ioredis');
 var redis = new Redis();
 
-io.origins('*:*');
 /**
- *  "*"  is
+ *  "*" is allows you to subscribe all event
  */
-
 redis.psubscribe('*', function(err, count) {
 });
+
 redis.on('pmessage', function(subscribed, channel, message) {
     console.log('subscribed', subscribed);
     console.log('channel', channel);
@@ -18,9 +17,8 @@ redis.on('pmessage', function(subscribed, channel, message) {
     message = JSON.parse(message);
     // io.emit(channel + ':' + message.event, message.data);
     io.emit(channel, message.data);
-
-
 });
+
 io.on('connection', function(socket) {
     console.log('Connect');
     socket.on('insdata', function(data) {
